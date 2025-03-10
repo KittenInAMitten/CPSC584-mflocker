@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MFlocker UI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="left-screen">
+        <div class="video-feed">
+            <video id="video"></video>
+        </div>
+
+        <div class="controls">
+            <div class="arrow-grid">
+                <div></div>
+                <button class="arrow-btn" id="up-btn">↑</button>
+                <div></div>
+                <button class="arrow-btn" id="left-btn">←</button>
+                <div></div>
+                <button class="arrow-btn" id="right-btn">→</button>
+                <div></div>
+                <button class="arrow-btn" id="down-btn">↓</button>
+                <div></div>
+                
+                
+            </div>
+            <div class="tilt-controls">
+                <button class="tilt-btn" id="tilt-up-btn">⤴️</button>
+                <button class="tilt-btn" id="tilt-down-btn">⤵️</button>
+            </div>
+        </div>
+        </div>
+
+        <div class="right-screen">
+        <div class="name-list">
+            <h3>Students</h3>
+            <ul id="names">
+                <li>🔴 Name 1</li>
+                <li>🟡 Name 2</li>
+                <li>🔵 Name 3</li>
+            </ul>
+        </div>
+
+        <div class="log-box">
+            <h3>Log</h3>
+            <div id="log-messages"></div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const logBox = document.getElementById('log-messages');
+
+        function sendCommand(action) {
+            fetch('/command', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action })
+            })
+            .then(res => res.json())
+            .then(data => log(`Sent: ${data.action}`))
+            .catch(err => log(`Error: ${err}`));
+        }
+
+        function log(message) {
+            const entry = document.createElement('div');
+            entry.textContent = message;
+            logBox.prepend(entry);
+        }
+
+        document.getElementById('up-btn').onclick = () => sendCommand('forward');
+        document.getElementById('down-btn').onclick = () => sendCommand('backward');
+        document.getElementById('left-btn').onclick = () => sendCommand('left');
+        document.getElementById('right-btn').onclick = () => sendCommand('right');
+        document.getElementById('tilt-up-btn').onclick = () => sendCommand('tilt_up');
+        document.getElementById('tilt-down-btn').onclick = () => sendCommand('tilt_down');
+
+        document.addEventListener('keydown', (e) => {
+            const keyMap = {
+                'ArrowUp': 'forward',
+                'ArrowDown': 'backward',
+                'ArrowLeft': 'left',
+                'ArrowRight': 'right',
+                'w': 'tilt_up',
+                's': 'tilt_down'
+            };
+            if (keyMap[e.key]) sendCommand(keyMap[e.key]);
+        });
+    </script>
+</body>
+</html>
