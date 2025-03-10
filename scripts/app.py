@@ -1,11 +1,12 @@
 from flask import Flask, render_template, jsonify, request
-# from picrawler import Picrawler
+# from vilib import Vilib
+from picrawler import Picrawler
 from time import sleep
 import readchar
 import threading
 
 # Variables
-# crawler = Picrawler() 
+crawler = Picrawler() 
 speed = 70
 
 # Debug variables
@@ -30,37 +31,37 @@ def show_info():
 
 
 def move_forward():
-	# crawler.do_action('forward',1,speed)
+	crawler.do_action('forward',1,speed)
 	print("Moved forward")
 	show_info()
 	return
     
 def move_backward():
-	# crawler.do_action('backward',1,speed)
+	crawler.do_action('backward',1,speed)
 	print("Moved backward")
 	show_info()
 	return
     
 def turn_left():
-	# crawler.do_action('turn left',1,speed)
+	crawler.do_action('turn left',1,speed)
 	print("Turned left")
 	show_info()
 	return
     
 def turn_right():
-	# crawler.do_action('turn right',1,speed)
+	crawler.do_action('turn right',1,speed)
 	print("Turned right")
 	show_info()
 	return
 
 def tilt_up():
-	# crawler.do_action('look up',1,speed)
+	crawler.do_action('look up',1,speed)
 	print("Tilted up")
 	show_info()
 	return
 
 def tilt_down():
-	# crawler.do_action('look down',1,speed)
+	crawler.do_action('look down',1,speed)
 	print("Tilted down")
 	return
 
@@ -127,15 +128,16 @@ def command():
 def video_feed():
     print("video started")
     # return Vilib.display()
+    return "http://172.17.10.168:9000/mjpg"
 
 if __name__ == '__main__':
     # control_thread = threading.Thread(target=main_loop, daemon=True)
     # control_thread.start()
     
     # Vilib.camera_start()
-    # Vilib.display()
+    # Vilib.display(local=False, web=False)
     # Vilib.color_detect("red") 
-    print("Camera started")
+    # print("Camera started")
 
     app.run(debug=True, host='0.0.0.0')
     
