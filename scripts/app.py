@@ -123,9 +123,19 @@ def command():
     # show_info()  
     return jsonify({"status": "success", "action": data['action']})
 
+@app.route('/video_feed')
+def video_feed():
+    print("video started")
+    # return Vilib.display()
+
 if __name__ == '__main__':
     # control_thread = threading.Thread(target=main_loop, daemon=True)
     # control_thread.start()
+    
+    # Vilib.camera_start()
+    # Vilib.display()
+    # Vilib.color_detect("red") 
+    print("Camera started")
 
     app.run(debug=True, host='0.0.0.0')
     

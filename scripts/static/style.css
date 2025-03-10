@@ -28,7 +28,7 @@ body {
     overflow: hidden;
 }
 
-.video-feed video {
+.video-feed img {
     width: 100%;
     height: 100%;
     object-fit: cover;
