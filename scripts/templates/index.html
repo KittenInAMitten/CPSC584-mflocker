@@ -79,12 +79,12 @@
 
         document.addEventListener('keydown', (e) => {
             const keyMap = {
-                'ArrowUp': 'forward',
-                'ArrowDown': 'backward',
-                'ArrowLeft': 'left',
-                'ArrowRight': 'right',
-                'w': 'tilt_up',
-                's': 'tilt_down'
+                'w': 'forward',
+                's': 'backward',
+                'a': 'left',
+                'd': 'right',
+                'r': 'tilt_up',
+                'f': 'tilt_down'
             };
             if (keyMap[e.key]) sendCommand(keyMap[e.key]);
         });

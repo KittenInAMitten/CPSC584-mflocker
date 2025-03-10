@@ -1,9 +1,9 @@
-from picrawler import Picrawler
+# from picrawler import Picrawler
 from time import sleep
 import readchar
 
 # Variables
-crawler = Picrawler() 
+# crawler = Picrawler() 
 speed = 70
 
 # Debug variables
@@ -28,39 +28,45 @@ def show_info():
 
 
 def move_forward():
-	crawler.do_action('forward',1,speed)
+	# crawler.do_action('forward',1,speed)
+	print("Moved forward")
 	show_info()
 	return
     
 def move_backward():
-	crawler.do_action('backward',1,speed) 
+	# crawler.do_action('backward',1,speed)
+	print("Moved backward")
 	show_info()
 	return
     
 def turn_left():
-	crawler.do_action('turn left',1,speed)
+	# crawler.do_action('turn left',1,speed)
+	print("Turned left")
 	show_info()
 	return
     
 def turn_right():
-	crawler.do_action('turn right',1,speed)
+	# crawler.do_action('turn right',1,speed)
+	print("Turned right")
 	show_info()
 	return
 
 def tilt_up():
-	crawler.do_action('look up',1,speed)
+	# crawler.do_action('look up',1,speed)
+	print("Tilted up")
 	show_info()
 	return
 
 def tilt_down():
-	crawler.do_action('look down',1,speed)
+	# crawler.do_action('look down',1,speed)
+	print("Tilted down")
 	return
 
 def main(): 
 
-    Vilib.camera_start()
-    Vilib.display()
-    Vilib.color_detect("red") 
+    # Vilib.camera_start()
+    # Vilib.display()
+    # Vilib.color_detect("red")
 
 	show_info()   
 	if(KEYBOARD_MODE):
