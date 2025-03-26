@@ -8,9 +8,9 @@
 <body>
     <div class="container">
         <div class="left-screen">
-            <div class="video-feed">
-                <img id="video-stream" src="{{ url_for('video_feed') }}" alt="PiCrawler Video Feed">
-            </div>
+        <div class="video-feed">
+            <img id="video-stream" src="http://172.17.10.168:9000/mjpg" alt="PiCrawler Video Feed">
+        </div>
 
             <div class="controls">
                 <div class="arrow-grid">
@@ -116,12 +116,65 @@
             logBox.prepend(entry);
         }
 
-        document.getElementById('up-btn').onclick = () => sendCommand('forward');
-        document.getElementById('down-btn').onclick = () => sendCommand('backward');
-        document.getElementById('left-btn').onclick = () => sendCommand('left');
-        document.getElementById('right-btn').onclick = () => sendCommand('right');
-        document.getElementById('tilt-up-btn').onclick = () => sendCommand('tilt_up');
-        document.getElementById('tilt-down-btn').onclick = () => sendCommand('tilt_down');
+        // https://stackoverflow.com/questions/41304737/why-onmousedown-event-occur-once-how-to-handle-mouse-hold-event
+        var timer = null;
+
+        // var lockTimer = setInterval(function() {
+        //     sendCommand('lock');
+        //     console.log('lockingStart');
+        // }, 50);
+
+        function mouseDown(command) {
+            // clearInterval(lockTimer);
+            timer = setInterval(function(){
+                // the function can do whatever you need it to
+                // console.log("Mouse is down!");
+                sendCommand(command);
+            }, 20);
+        }
+
+        // Set up a custom mouseup event handler for letting go 
+        // of the mouse inside the box or when mouse leaves the box.
+        function mouseDone(){
+            clearInterval(timer);         // Cancel the previously initiated timer function
+            // clearInterval(lockTimer);
+            // lockTimer = setInterval(function() {
+            //     sendCommand('lock');
+            //     console.log('lockingDone');
+            // }, 50)
+            // console.log("Mouse is up or outside of box!");  // And, do whatever else you need to
+        }
+        
+
+        // document.getElementById('up-btn').onclick = () => sendCommand('forward');
+        // document.getElementById('down-btn').onclick = () => sendCommand('backward');
+        // document.getElementById('left-btn').onclick = () => sendCommand('left');
+        // document.getElementById('right-btn').onclick = () => sendCommand('right');
+        // document.getElementById('tilt-up-btn').onclick = () => sendCommand('tilt_up');
+        // document.getElementById('tilt-down-btn').onclick = () => sendCommand('tilt_down');
+        document.getElementById('up-btn').addEventListener("mousedown", () => {mouseDown('forward');});
+        document.getElementById('up-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('up-btn').addEventListener("mouseleave", () => {mouseDone();});
+
+        document.getElementById('down-btn').addEventListener("mousedown", () => {mouseDown('backward');});
+        document.getElementById('down-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('down-btn').addEventListener("mouseleave", () => {mouseDone();});
+
+        document.getElementById('left-btn').addEventListener("mousedown", () => {mouseDown('left');});
+        document.getElementById('left-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('left-btn').addEventListener("mouseleave", () => {mouseDone();});
+
+        document.getElementById('right-btn').addEventListener("mousedown", () => {mouseDown('right');});
+        document.getElementById('right-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('right-btn').addEventListener("mouseleave", () => {mouseDone();});
+
+        document.getElementById('tilt-up-btn').addEventListener("mousedown", () => {mouseDown('tilt_up');});
+        document.getElementById('tilt-up-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('tilt-up-btn').addEventListener("mouseleave", () => {mouseDone();});
+
+        document.getElementById('tilt-down-btn').addEventListener("mousedown", () => {mouseDown('tilt_down');});
+        document.getElementById('tilt-down-btn').addEventListener("mouseup", () => {mouseDone();});
+        document.getElementById('tilt-down-btn').addEventListener("mouseleave", () => {mouseDone();});
 
         document.addEventListener('keydown', (e) => {
             const keyMap = {
@@ -132,7 +185,14 @@
                 'r': 'tilt_up',
                 'f': 'tilt_down'
             };
-            if (keyMap[e.key]) sendCommand(keyMap[e.key]);
+            if (keyMap[e.key]) {
+                sendCommand(keyMap[e.key]);
+                // clearInterval(lockTimer);
+                // lockTimer = setInterval(function() {
+                //     sendCommand('lock');
+                //     console.log('lockingKey');
+                // }, 50)
+            }
         });
     </script>
 </body>
