@@ -1,4 +1,4 @@
-# from vilib import Vilib
+from vilib import Vilib
 from picrawler import Picrawler
 from time import sleep
 import readchar
@@ -9,6 +9,8 @@ crawler = Picrawler()
 speed = 60
 tilt_value = 0
 in_action = False
+
+student_colors = ["green", "yellow", "blue"]
 
 ALERT_MODE = False
 MANUAL_MODE = True
@@ -44,7 +46,6 @@ def move_forward():
     tilt_value = 0
     crawler.do_action('forward',1,speed)
     # crawler.do_action('stand', speed)
-    print("Moved forward")
     show_info()
     in_action = False
     return
@@ -58,7 +59,6 @@ def move_backward():
     tilt_value = 0
     crawler.do_action('backward',1,speed)
     # crawler.do_action('stand', speed)
-    print("Moved backward")
     show_info()
     in_action = False
     return
@@ -72,7 +72,6 @@ def turn_left():
     tilt_value = 0
     crawler.do_action('turn left',1,speed)
     # crawler.do_action('stand', speed)
-    print("Turned left")
     show_info()
     in_action = False
     return
@@ -87,7 +86,6 @@ def turn_right():
     tilt_value = 0
     crawler.do_action('turn right',1,speed)
     # crawler.do_action('stand', speed)
-    print("Turned right")
     show_info()
     in_action = False
     return
@@ -154,19 +152,49 @@ def stand():
     #     crawler.do_step(coord, 60)
     in_action = False
     return
+
+def followRed():
+    Vilib.color_detect("red")
+    if Vilib.detect_obj_parameter['color_n']!=0 and not in_action:
+        coordinate_x = Vilib.detect_obj_parameter['color_x']
+        in_action = True
+        if coordinate_x < 100:
+            crawler.do_action('turn left',1,speed)
+            sleep(0.05) 
+        elif coordinate_x > 220:
+            crawler.do_action('turn right',1,speed)
+            sleep(0.05) 
+        else :
+            crawler.do_action('forward',2,speed)
+            sleep(0.05)    
+        in_action = False
+    else :
+        crawler.do_step('stand',speed)
+        sleep(0.05)
+        
+def checkForColors():
+    detection = [0, 0, 0]
+    for colorIndex in range(3):
+        Vilib.color_detect(student_colors[colorIndex])
+        if Vilib.detect_obj_parameter['color_n']!=0:
+            detection[colorIndex] = 1
+        else:
+            detection[colorIndex] = 0
+    return detection
+        
     
 
 def main(): 
 
-    # Vilib.camera_start()
-    # Vilib.display(local=False,web=True)
-    # Vilib.color_detect("red") 
+    Vilib.camera_start()
+    Vilib.display(local=False,web=True)
+    Vilib.color_detect("red") 
     
     global MANUAL_MODE
     
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serversocket.bind(('localhost', 8089))
-    serversocket.listen(5) # become a server socket, maximum 5 connections
+    serversocket.listen(1) # become a server socket, maximum 5 connections
 
     print('Mother Flocker activated. Awaiting commands.')
     
@@ -176,7 +204,7 @@ def main():
             buf = connection.recv(64)
             command = buf.decode('utf-8')
             if len(buf) > 0:
-                print(command)
+                print('Received command:' + command)
                 if MANUAL_MODE:
                     if command == "forward":
                         move_forward()	
@@ -187,27 +215,22 @@ def main():
                     elif command == "right":
                         turn_right()
                     elif command == "tilt_up":
-                        print("tilting up")
                         tilt_up()
                     elif command == "tilt_down":
-                        print("tilting dow")
                         tilt_down()
                     elif command == "setAutomatic":
                         MANUAL_MODE = False
-                        print("Automatic Set")
-                    elif command == "setManual":
-                        print("Manual Set")
                     elif command == "stand":
-                        print("standing")
                         stand()
                 else:
                     if command == "setManual":
                         MANUAL_MODE = True
                         print("Manual Set")
-                    else:
-                        print("check")
-                        # INSERT BULL FIGHT CODE HERE
-                connection.send(bytes('ok', 'UTF-8'))
+                    elif command == "blank":
+                        print("update")
+                        followRed()
+                detectionResults = checkForColors()
+                connection.send(bytes('ok-'+('-'.join(str(x) for x in detectionResults)), 'UTF-8'))
                 sleep(0.05)
     except KeyboardInterrupt:
         pass
@@ -216,7 +239,7 @@ def main():
     finally:
         crawler.do_action("stand", speed=60)
         sleep(.1)		
-    '''    
+'''    
     # try:
     #     show_info()	
     #     if(KEYBOARD_MODE):

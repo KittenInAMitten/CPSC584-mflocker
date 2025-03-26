@@ -15,6 +15,7 @@ in_action = False
 waiting = False
 start_time = 0
 last_time = 0
+current_detection = [0, 0, 0]
 
 # Debug variables
 KEYBOARD_MODE = True
@@ -257,13 +258,21 @@ def command():
         while waiting:
             buf = clientsocket.recv(64)
             reply = buf.decode('utf-8')
-            if len(buf) > 0:
-                if reply == 'ok':
+            replies = reply.split('-')
+            if len(buf) > 0 and len(replies) == 4:
+                if replies[0] == 'ok':
                     waiting = False
+                    for x in range(3):
+                        if replies[x + 1] == '1':
+                            current_detection[x] = 1
+                        else:
+                            current_detection[x] = 0
                     break
+        print(current_detection)
+        
     else:
         last_time = time.time()
-        if last_time - start_time > 5.0:
+        if last_time - start_time > 1.5:
             waiting = False
     
     return jsonify({"status": "success", "action": data['action']})
