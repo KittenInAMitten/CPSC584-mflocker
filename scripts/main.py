@@ -176,9 +176,13 @@ def checkForColors():
     detection = [0, 0, 0]
     for colorIndex in range(3):
         Vilib.color_detect(student_colors[colorIndex])
+        Vilib.color_detect_work(Vilib.img, Vilib.camera_width, Vilib.camera_height, Vilib.color_detect_color)
+        print("Checking for Color: " + student_colors[colorIndex])
         if Vilib.detect_obj_parameter['color_n']!=0:
+            print(' - found')
             detection[colorIndex] = 1
         else:
+            print(' - notfound')
             detection[colorIndex] = 0
     return detection
         
