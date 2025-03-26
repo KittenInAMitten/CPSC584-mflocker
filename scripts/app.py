@@ -243,6 +243,12 @@ def command():
             # tilt_up()
         elif data['action'] == "tilt_down":
             clientsocket.send(bytes(data['action'], 'UTF-8'))
+        elif data['action'] == "setAutomatic":
+            clientsocket.send(bytes(data['action'], 'UTF-8'))
+        elif data['action'] == "setManual":
+            clientsocket.send(bytes(data['action'], 'UTF-8'))
+        elif data['action'] == "blank":
+            clientsocket.send(bytes(data['action'], 'UTF-8'))
             # tilt_down()
         # elif data['action'] == "lock":
         #     lock_pos()

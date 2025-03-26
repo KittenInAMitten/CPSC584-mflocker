@@ -1,4 +1,4 @@
-from vilib import Vilib
+# from vilib import Vilib
 from picrawler import Picrawler
 from time import sleep
 import readchar
@@ -158,9 +158,11 @@ def stand():
 
 def main(): 
 
-    Vilib.camera_start()
-    Vilib.display(local=False,web=True)
-    Vilib.color_detect("red") 
+    # Vilib.camera_start()
+    # Vilib.display(local=False,web=True)
+    # Vilib.color_detect("red") 
+    
+    global MANUAL_MODE
     
     serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     serversocket.bind(('localhost', 8089))
@@ -190,11 +192,23 @@ def main():
                     elif command == "tilt_down":
                         print("tilting dow")
                         tilt_down()
+                    elif command == "setAutomatic":
+                        MANUAL_MODE = False
+                        print("Automatic Set")
+                    elif command == "setManual":
+                        print("Manual Set")
                     elif command == "stand":
                         print("standing")
                         stand()
-                    connection.send(bytes('ok', 'UTF-8'))
-                    sleep(0.05)
+                else:
+                    if command == "setManual":
+                        MANUAL_MODE = True
+                        print("Manual Set")
+                    else:
+                        print("check")
+                        # INSERT BULL FIGHT CODE HERE
+                connection.send(bytes('ok', 'UTF-8'))
+                sleep(0.05)
     except KeyboardInterrupt:
         pass
     except Exception as e:

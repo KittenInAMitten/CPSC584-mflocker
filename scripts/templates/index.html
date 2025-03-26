@@ -33,7 +33,7 @@
                 <div class="mode-switch">
                     <span>Manual</span>
                     <label class="switch">
-                        <input type="checkbox" id="mode-toggle">
+                        <input type="checkbox" id="mode-toggle" onclick="modeToggle()">
                         <span class="slider"></span>
                     </label>
                     <span>Automatic</span>
@@ -99,6 +99,8 @@
     <script>
         const logBox = document.getElementById('log-messages');
 
+        var followTimer = null;
+
         function sendCommand(action) {
             fetch('/command', {
                 method: 'POST',
@@ -114,6 +116,19 @@
             const entry = document.createElement('div');
             entry.textContent = message;
             logBox.prepend(entry);
+        }
+
+        function modeToggle() {
+            if(document.getElementById('mode-toggle').checked) {
+                clearInterval(followTimer);
+                followTimer = setInterval(function(){
+                    sendCommand('blank')
+                }, 100)
+                sendCommand('setAutomatic');
+            } else {
+                clearInterval(followTimer);
+                sendCommand('setManual');
+            }
         }
 
         // https://stackoverflow.com/questions/41304737/why-onmousedown-event-occur-once-how-to-handle-mouse-hold-event
@@ -175,6 +190,7 @@
         document.getElementById('tilt-down-btn').addEventListener("mousedown", () => {mouseDown('tilt_down');});
         document.getElementById('tilt-down-btn').addEventListener("mouseup", () => {mouseDone();});
         document.getElementById('tilt-down-btn').addEventListener("mouseleave", () => {mouseDone();});
+
 
         document.addEventListener('keydown', (e) => {
             const keyMap = {
