@@ -1,7 +1,6 @@
 from vilib import Vilib
 from picrawler import Picrawler
 from time import sleep
-import readchar
 import socket
 
 # Variables
@@ -172,19 +171,19 @@ def followRed():
         crawler.do_step('stand',speed)
         sleep(0.05)
         
-def checkForColors():
-    detection = [0, 0, 0]
-    for colorIndex in range(3):
-        Vilib.color_detect(student_colors[colorIndex])
-        Vilib.color_detect_work(Vilib.img, Vilib.camera_width, Vilib.camera_height, Vilib.color_detect_color)
-        print("Checking for Color: " + student_colors[colorIndex])
-        if Vilib.detect_obj_parameter['color_n']!=0:
-            print(' - found')
-            detection[colorIndex] = 1
-        else:
-            print(' - notfound')
-            detection[colorIndex] = 0
-    return detection
+# def checkForColors():
+#     detection = [0, 0, 0]
+#     for colorIndex in range(3):
+#         Vilib.color_detect(student_colors[colorIndex])
+#         Vilib.color_detect_work(Vilib.img, Vilib.camera_width, Vilib.camera_height, Vilib.color_detect_color)
+#         print("Checking for Color: " + student_colors[colorIndex])
+#         if Vilib.detect_obj_parameter['color_n']!=0:
+#             print(' - found')
+#             detection[colorIndex] = 1
+#         else:
+#             print(' - notfound')
+#             detection[colorIndex] = 0
+#     return detection
         
     
 
@@ -233,8 +232,7 @@ def main():
                     elif command == "blank":
                         print("update")
                         followRed()
-                detectionResults = checkForColors()
-                connection.send(bytes('ok-'+('-'.join(str(x) for x in detectionResults)), 'UTF-8'))
+                connection.send(bytes('ok', 'UTF-8'))
                 sleep(0.05)
     except KeyboardInterrupt:
         pass
