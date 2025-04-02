@@ -258,15 +258,9 @@ def command():
         while waiting:
             buf = clientsocket.recv(64)
             reply = buf.decode('utf-8')
-            replies = reply.split('-')
-            if len(buf) > 0 and len(replies) == 4:
-                if replies[0] == 'ok':
+            if len(buf) > 0:
+                if reply == 'ok':
                     waiting = False
-                    for x in range(3):
-                        if replies[x + 1] == '1':
-                            current_detection[x] = 1
-                        else:
-                            current_detection[x] = 0
                     break
         print(current_detection)
         
