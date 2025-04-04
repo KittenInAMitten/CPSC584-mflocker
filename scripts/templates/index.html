@@ -183,15 +183,22 @@
         }
 
         function modeToggle() {
+            const buttons = document.querySelectorAll('.controls button');
             if(document.getElementById('mode-toggle').checked) {
                 clearInterval(followTimer);
                 followTimer = setInterval(function(){
                     sendCommand('blank')
                 }, 100)
                 sendCommand('setAutomatic');
+                buttons.forEach(button => {
+                    button.disabled = true;
+                });
             } else {
                 clearInterval(followTimer);
                 sendCommand('setManual');
+                buttons.forEach(button => {
+                    button.disabled = false;
+                });
             }
         }
 
