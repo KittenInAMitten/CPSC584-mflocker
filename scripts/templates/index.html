@@ -110,7 +110,7 @@
             showLastVisibleFrame(studentName);
         };
         studentListItem.appendChild(showFrameButton);
-        if (studentsInFrame.contains(disappearStudent)) {
+        if (!flashing) {
             studentsInFrame.removeChild(disappearStudent);
             studentsNotInFrame.appendChild(studentListItem);
             const now = new Date();
@@ -119,8 +119,13 @@
             logEntry.textContent = `🔴 Name 1 disappeared from frame at ${timeString}`;
             logBox.appendChild(logEntry);
         } else {
-            studentsNotInFrame.removeChild(studentListItem);
+            studentsNotInFrame.removeChild(disappearStudent);
             studentsInFrame.appendChild(disappearStudent);
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const logEntry = document.createElement('p');
+            logEntry.textContent = `🔴 Name 1 re-entered frame at ${timeString}`;
+            logBox.appendChild(logEntry);
         }
         disappearStudent.classList.toggle('disappear');
         disappearStudent.textContent = disappearStudent.textContent === '🔴 Name 1' ? '🟡 Name 2' : '🔴 Name 1';

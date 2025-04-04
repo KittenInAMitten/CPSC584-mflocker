@@ -267,6 +267,16 @@ h3 {
 }
 
 .flashing {
-    background-color: red;
+    background-color: rgb(220, 57, 57);
     transition: background-color 0.3s ease;
+}
+
+.tab-content {
+    transition: background-color 0.3s ease-in-out;
+  }
+
+.student-list li {
+background-color: white;
+z-index: 1;
+position: relative;
 }
