@@ -208,8 +208,8 @@ def main_loop():
 
 app = Flask(__name__)
 
-clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientsocket.connect(('localhost', 8089))
+# clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# clientsocket.connect(('localhost', 8089))
 
 @app.route('/')
 def index():
@@ -226,49 +226,49 @@ def command():
     if waiting == False:
         start_time = time.time()
         print(f"Received command: {data['action']}")
-        waiting = True
-        if data['action'] == "forward":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # move_forward()
-        elif data['action'] == "backward":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # move_backward()
-        elif data['action'] == "left":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # turn_left()
-        elif data['action'] == "right":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # turn_right()
-        elif data['action'] == "tilt_up":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # tilt_up()
-        elif data['action'] == "tilt_down":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-        elif data['action'] == "setAutomatic":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-        elif data['action'] == "setManual":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
-        elif data['action'] == "blank":
-            clientsocket.send(bytes(data['action'], 'UTF-8'))
+        # waiting = True
+        # if data['action'] == "forward":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        #     # move_forward()
+        # elif data['action'] == "backward":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        #     # move_backward()
+        # elif data['action'] == "left":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        #     # turn_left()
+        # elif data['action'] == "right":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        #     # turn_right()
+        # elif data['action'] == "tilt_up":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        #     # tilt_up()
+        # elif data['action'] == "tilt_down":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        # elif data['action'] == "setAutomatic":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        # elif data['action'] == "setManual":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
+        # elif data['action'] == "blank":
+        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
             # tilt_down()
         # elif data['action'] == "lock":
         #     lock_pos()
         # show_info()  
         sleep(0.5)
-        while waiting:
-            buf = clientsocket.recv(64)
-            reply = buf.decode('utf-8')
-            replies = reply.split('-')
-            if len(buf) > 0 and len(replies) == 4:
-                if replies[0] == 'ok':
-                    waiting = False
-                    for x in range(3):
-                        if replies[x + 1] == '1':
-                            current_detection[x] = 1
-                        else:
-                            current_detection[x] = 0
-                    break
-        print(current_detection)
+        # while waiting:
+        #     buf = clientsocket.recv(64)
+        #     reply = buf.decode('utf-8')
+        #     replies = reply.split('-')
+        #     if len(buf) > 0 and len(replies) == 4:
+        #         if replies[0] == 'ok':
+        #             waiting = False
+        #             for x in range(3):
+        #                 if replies[x + 1] == '1':
+        #                     current_detection[x] = 1
+        #                 else:
+        #                     current_detection[x] = 0
+        #             break
+        # print(current_detection)
         
     else:
         last_time = time.time()

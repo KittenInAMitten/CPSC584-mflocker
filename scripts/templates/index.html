@@ -51,17 +51,15 @@
             <div id="in-frame" class="tab-content active">
                 <h3>Students in Frame</h3>
                 <ul class="student-list" id="students-in-frame">
-                    <li>🔴 Name 1</li>
+                    <li id="disappear">🔴 Name 1</li>
                     <li>🟡 Name 2</li>
+                    <li>🔵 Name 3</li>
                 </ul>
             </div>
         
             <div id="not-in-frame" class="tab-content">
                 <h3>Students Not in Frame</h3>
                 <ul class="student-list" id="students-not-in-frame">
-                    <div class="student-name">
-                    <li class="s-name" >🔵 Name 3</li> <button class="show-frame-btn" onclick="showLastVisibleFrame('Name 3')">Show Last Visible Frame</button></li>
-                    <div class="student-name">
                 </ul>
             </div>
         </div>
@@ -75,6 +73,10 @@
 
 
 <script>
+
+    let flashing = false;
+    let flashInterval;
+
     function switchTab(tabName) {
         const tabs = document.querySelectorAll('.tab');
         const contents = document.querySelectorAll('.tab-content');
@@ -89,6 +91,63 @@
 
         document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
         document.getElementById(tabName).classList.add('active');
+    }
+
+    function toggleStudent(){
+        const disappearStudent = document.getElementById('disappear');
+        const studentsInFrame = document.getElementById('students-in-frame');
+        const studentsNotInFrame = document.getElementById('students-not-in-frame');
+        const studentName = disappearStudent.textContent;
+        const logBox = document.getElementById('log-messages');
+        const studentListItem = document.createElement('li');
+        studentListItem.textContent = studentName;
+        studentListItem.className = 's-name';
+        studentListItem.id = 'disappear';
+        const showFrameButton = document.createElement('button');
+        showFrameButton.textContent = 'Show Last Visible Frame';
+        showFrameButton.className = 'show-frame-btn';
+        showFrameButton.onclick = function() {
+            showLastVisibleFrame(studentName);
+        };
+        studentListItem.appendChild(showFrameButton);
+        if (studentsInFrame.contains(disappearStudent)) {
+            studentsInFrame.removeChild(disappearStudent);
+            studentsNotInFrame.appendChild(studentListItem);
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            const logEntry = document.createElement('p');
+            logEntry.textContent = `🔴 Name 1 disappeared from frame at ${timeString}`;
+            logBox.appendChild(logEntry);
+        } else {
+            studentsNotInFrame.removeChild(studentListItem);
+            studentsInFrame.appendChild(disappearStudent);
+        }
+        disappearStudent.classList.toggle('disappear');
+        disappearStudent.textContent = disappearStudent.textContent === '🔴 Name 1' ? '🟡 Name 2' : '🔴 Name 1';
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '2') {
+            toggleStudent();
+            toggleFlashingBackgrounds();
+        }
+    });
+
+    function toggleFlashingBackgrounds() {
+        const inFrameDiv = document.getElementById('in-frame');
+        const notInFrameDiv = document.getElementById('not-in-frame');
+    
+        if (!flashing) {
+            flashing = true;
+            flashInterval = setInterval(() => {
+                inFrameDiv.classList.toggle('flashing');
+                notInFrameDiv.classList.toggle('flashing');
+            }, 1000);
+        } else {
+            flashing = false;
+            clearInterval(flashInterval);
+            inFrameDiv.classList.remove('flashing');
+            notInFrameDiv.classList.remove('flashing');
+        }
     }
 
     function showLastVisibleFrame(studentName) {
