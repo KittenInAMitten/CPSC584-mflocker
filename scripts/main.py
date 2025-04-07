@@ -1,7 +1,6 @@
 from vilib import Vilib
 from picrawler import Picrawler
 from time import sleep
-import readchar
 import socket
 
 # Variables
@@ -142,7 +141,14 @@ def stand():
     if in_action:
         return
     in_action = True
-    crawler.do_action("stand", speed=60)
+    if tilt_value > 0:
+        tilt_up()
+    elif tilt_value < 0:
+        tilt_down()
+    else: 
+        crawler.do_action("stand", speed=60)
+        sleep(0.05)    
+        in_action = False
     # coords = [
     #     # stand
     #     [[45, 45, -50], [45, 45, -50], [45, 45, -50], [45, 45, -50]],
@@ -150,41 +156,47 @@ def stand():
     # ]
     # for coord in coords:
     #     crawler.do_step(coord, 60)
-    in_action = False
     return
 
 def followRed():
+    global in_action
     Vilib.color_detect("red")
     if Vilib.detect_obj_parameter['color_n']!=0 and not in_action:
         coordinate_x = Vilib.detect_obj_parameter['color_x']
         in_action = True
-        if coordinate_x < 100:
+        leftBounds = Vilib.camera_width * 0.25
+        rightBounds = Vilib.camera_width * 0.75
+        # if coordinate_x < 100:
+        if coordinate_x < leftBounds:
             crawler.do_action('turn left',1,speed)
             sleep(0.05) 
-        elif coordinate_x > 220:
+        # elif coordinate_x > 220:
+        elif coordinate_x > rightBounds:
             crawler.do_action('turn right',1,speed)
             sleep(0.05) 
         else :
             crawler.do_action('forward',2,speed)
             sleep(0.05)    
         in_action = False
-    else :
-        crawler.do_step('stand',speed)
+    elif not in_action:
+        in_action = True
+        crawler.do_action('stand',speed)
         sleep(0.05)
+        in_action = False
         
-def checkForColors():
-    detection = [0, 0, 0]
-    for colorIndex in range(3):
-        Vilib.color_detect(student_colors[colorIndex])
-        Vilib.color_detect_work(Vilib.img, Vilib.camera_width, Vilib.camera_height, Vilib.color_detect_color)
-        print("Checking for Color: " + student_colors[colorIndex])
-        if Vilib.detect_obj_parameter['color_n']!=0:
-            print(' - found')
-            detection[colorIndex] = 1
-        else:
-            print(' - notfound')
-            detection[colorIndex] = 0
-    return detection
+# def checkForColors():
+#     detection = [0, 0, 0]
+#     for colorIndex in range(3):
+#         Vilib.color_detect(student_colors[colorIndex])
+#         Vilib.color_detect_work(Vilib.img, Vilib.camera_width, Vilib.camera_height, Vilib.color_detect_color)
+#         print("Checking for Color: " + student_colors[colorIndex])
+#         if Vilib.detect_obj_parameter['color_n']!=0:
+#             print(' - found')
+#             detection[colorIndex] = 1
+#         else:
+#             print(' - notfound')
+#             detection[colorIndex] = 0
+#     return detection
         
     
 
@@ -224,7 +236,7 @@ def main():
                         tilt_down()
                     elif command == "setAutomatic":
                         MANUAL_MODE = False
-                    elif command == "stand":
+                    elif command == "blank":
                         stand()
                 else:
                     if command == "setManual":
@@ -233,8 +245,7 @@ def main():
                     elif command == "blank":
                         print("update")
                         followRed()
-                detectionResults = checkForColors()
-                connection.send(bytes('ok-'+('-'.join(str(x) for x in detectionResults)), 'UTF-8'))
+                connection.send(bytes('ok', 'UTF-8'))
                 sleep(0.05)
     except KeyboardInterrupt:
         pass
