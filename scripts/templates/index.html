@@ -138,6 +138,12 @@
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '1') {
+        showLastVisibleFrame('Name 1');
+        }
+    });
+
     function toggleFlashingBackgrounds() {
         const inFrameDiv = document.getElementById('in-frame');
         const notInFrameDiv = document.getElementById('not-in-frame');
