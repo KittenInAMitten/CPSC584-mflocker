@@ -156,6 +156,13 @@
         }
     });
 
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'z') {
+            // move images1.jpg fro images folder to static folder
+            sendCommand('blank')
+        }
+    });
+
     function toggleFlashingBackgrounds() {
         const inFrameDiv = document.getElementById('in-frame');
         const notInFrameDiv = document.getElementById('not-in-frame');
