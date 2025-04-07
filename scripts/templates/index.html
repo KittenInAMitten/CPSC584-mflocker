@@ -66,6 +66,11 @@
                 <h3>Log</h3>
                 <div id="log-messages"></div>
             </div>
+
+            <div class="last-img">
+                <h3>Image</h3>
+                <img src="{{ url_for('static', filename='images1.jpg') }}" alt="Image" class="image">
+            </div>
         </div>
     </div>
 
@@ -139,7 +144,16 @@
     });
 
     document.addEventListener('keydown', (e) => {
-        console.log("Picture taken");
+        if (e.key === '2') {
+            console.log("Picture taken");
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '3') {
+            // move images1.jpg fro images folder to static folder
+
+        }
     });
 
     function toggleFlashingBackgrounds() {
