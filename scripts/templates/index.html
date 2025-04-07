@@ -44,12 +44,10 @@
         <div class="right-screen">
             <div class="listing-students">
             <div class="tabs">
-                <div class="tab active" onclick="switchTab('in-frame')">Students in Frame</div>
-                <div class="tab" onclick="switchTab('not-in-frame')">Students Not in Frame</div>
+                <div class="tab active">List of Students</div>
             </div>
         
             <div id="in-frame" class="tab-content active">
-                <h3>Students in Frame</h3>
                 <ul class="student-list" id="students-in-frame">
                     <li id="disappear">🔴 Name 1</li>
                     <li>🟡 Name 2</li>
@@ -109,18 +107,21 @@
         showFrameButton.onclick = function() {
             showLastVisibleFrame(studentName);
         };
-        studentListItem.appendChild(showFrameButton);
         if (!flashing) {
-            studentsInFrame.removeChild(disappearStudent);
-            studentsNotInFrame.appendChild(studentListItem);
+            // studentsInFrame.removeChild(disappearStudent);
+            // studentsNotInFrame.appendChild(studentListItem);
+            disappearStudent.textContent = `⚠️ 🔴 Name 1`;
+            disappearStudent.appendChild(showFrameButton);
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             const logEntry = document.createElement('p');
             logEntry.textContent = `🔴 Name 1 disappeared from frame at ${timeString}`;
             logBox.appendChild(logEntry);
         } else {
-            studentsNotInFrame.removeChild(disappearStudent);
-            studentsInFrame.appendChild(disappearStudent);
+            // studentsNotInFrame.removeChild(disappearStudent);
+            // studentsInFrame.appendChild(disappearStudent);
+            disappearStudent.textContent = `🔴 Name 1`;
+            //disappearStudent.removeChild(showFrameButton);
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             const logEntry = document.createElement('p');
@@ -128,7 +129,7 @@
             logBox.appendChild(logEntry);
         }
         disappearStudent.classList.toggle('disappear');
-        disappearStudent.textContent = disappearStudent.textContent === '🔴 Name 1' ? '🟡 Name 2' : '🔴 Name 1';
+        // disappearStudent.textContent = disappearStudent.textContent === '🔴 Name 1' ? '🟡 Name 2' : '🔴 Name 1';
     }
     document.addEventListener('keydown', (e) => {
         if (e.key === '2') {
