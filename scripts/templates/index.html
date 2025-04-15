@@ -214,10 +214,13 @@
                 body: JSON.stringify({ action })
             })
             .then(res => res.json())
-            .then(data => {log(`Sent: ${data.action}`); updateStudents(data.students)})
+            .then(data => {
+                log(`Sent: ${data.action}`); 
+                if(data.lastcmd == currentCommand)
+                    currentCommand = 'blank'
+                updateStudents(data.students)}
+            )
             .catch(err => log(`Error: ${err}`));
-            if(currentCommand != 'blank')
-                currentCommand = 'blank'
 
         }
 
