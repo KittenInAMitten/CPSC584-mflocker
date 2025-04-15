@@ -23,9 +23,12 @@ last_time = 0
 ALERT_MODE = False
 MANUAL_MODE = True
 
+CAMERA_TIME = 10
+
 # Debug variables
 KEYBOARD_MODE = False
     
+
 
 manual = '''
 Press keys on keyboard to control PiCrawler!
@@ -202,7 +205,7 @@ def takePicture():# ----- check path -----
     global in_action
     
     #check if time elapsed is 10 seconds, return if not
-    if time.time() - last_time < 20 or in_action:
+    if time.time() - last_time < CAMERA_TIME or in_action:
         return
     
     in_action = True

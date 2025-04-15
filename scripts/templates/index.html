@@ -77,7 +77,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
-    let flashInterval;
+    var flashInterval = null;
 
     function switchTab(tabName) {
         const tabs = document.querySelectorAll('.tab');
@@ -159,16 +159,20 @@
     function toggleFlashingBackgrounds(flashing) {
         const inFrameDiv = document.getElementById('in-frame');
         const notInFrameDiv = document.getElementById('not-in-frame');
-    
-        if (!flashing) {
-            flashing = true;
-            flashInterval = setInterval(() => {
-                inFrameDiv.classList.toggle('flashing');
-                notInFrameDiv.classList.toggle('flashing');
-            }, 1000);
+        console.log('Flasing: ' + flashing);
+        console.log('Interval: ' + flashInterval);
+        if (flashing) {
+            // flashing = true;
+            if(flashInterval == null)
+                flashInterval = setInterval(() => {
+                    inFrameDiv.classList.toggle('flashing');
+                    notInFrameDiv.classList.toggle('flashing');
+                }, 1000);
         } else {
-            flashing = false;
+            // flashing = false;
             clearInterval(flashInterval);
+            flashInterval = null;
+            
             inFrameDiv.classList.remove('flashing');
             notInFrameDiv.classList.remove('flashing');
         }
@@ -208,8 +212,11 @@
 
         var currentCommand = 'blank'
 
+        var currentStudents = "0 0 0"
+
         function updateStudents(studentsList) {
-            const states = dataString.trim().split(" ");
+            currentStudents = studentsList
+            const states = studentsList.trim().split(" ");
             const flashing = states.includes("0");
             toggleFlashingBackgrounds(flashing);
 
@@ -255,10 +262,16 @@
                 body: JSON.stringify({ action })
             })
             .then(res => res.json())
-            .then(data => {log(`Sent: ${data.action}`); updateStudents(data.students)})
+            .then(data => {
+                log(`Sent: ${data.action}`); 
+                if(data.lastcmd == currentCommand) {
+                    currentCommand = 'blank'
+                    if(currentStudents != data.stduents)
+                        updateStudents(data.students)
+                    }
+                }
+            )
             .catch(err => log(`Error: ${err}`));
-            if(currentCommand != 'blank')
-                currentCommand = 'blank'
 
         }
 
