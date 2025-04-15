@@ -42,6 +42,7 @@ def command():
     global current_detection
     data = request.json
     
+    last_command = "blank"
     
     # show_info()
     # if data['action'] != "lock": 
@@ -49,6 +50,7 @@ def command():
         start_time = time.time()
         if data['action'] != 'blank':
             print(f"Received command: {data['action']}")
+            
         waiting = True
         lastBlank = False
         clientsocket.send(bytes(data['action'], 'UTF-8'))
@@ -65,6 +67,7 @@ def command():
                         if parts[x + 1].isnumeric():
                             current_detection[x] = int(parts[x + 1])
                 if parts[0] == 'ok':
+                    last_command = data['action']
                     waiting = False
                     break
         
@@ -73,7 +76,7 @@ def command():
         if last_time - start_time > 1.5:
             waiting = False
     
-    return jsonify({"status": "success", "action": data['action'], "students": ' '.join(str(x) for x in current_detection)})
+    return jsonify({"status": "success", "action": data['action'], "students": ' '.join(str(x) for x in current_detection), "lastcmd": last_command})
 
 @app.route('/video_feed')
 def video_feed():
