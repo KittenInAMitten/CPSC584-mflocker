@@ -74,7 +74,7 @@
         </div>
     </div>
 
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
     let flashing = false;
@@ -181,8 +181,17 @@
         }
     }
 
+    const lastImageUrl = "{{ url_for('static', filename='images/blue.jpg') }}";
+    
     function showLastVisibleFrame(studentName) {
-        alert(`Showing last visible frame for ${studentName}`);
+        //alert(`Showing last visible frame for ${studentName}`);
+        Swal.fire({
+            title: `<h4>Showing last visible frame for ${studentName}</h4>`,
+            imageUrl: lastImageUrl,
+            imageWidth: 300,
+            imageAlt: 'Last visible frame',
+            confirmButtonText: 'Close'
+        });
     }
 </script>
 

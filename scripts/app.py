@@ -24,8 +24,8 @@ KEYBOARD_MODE = True
 
 app = Flask(__name__)
 
-clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-clientsocket.connect(('localhost', 8089))
+# clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# clientsocket.connect(('localhost', 8089))
 
 @app.route('/')
 def index():
@@ -46,7 +46,7 @@ def command():
             print(f"Received command: {data['action']}")
         waiting = True
         lastBlank = False
-        clientsocket.send(bytes(data['action'], 'UTF-8'))
+        # clientsocket.send(bytes(data['action'], 'UTF-8'))
         
         # if data['action'] == "forward":
         #     clientsocket.send(bytes(data['action'], 'UTF-8'))
@@ -79,14 +79,14 @@ def command():
         #     lock_pos()
         # show_info()  
         sleep(0.5)
-        while waiting:
-            buf = clientsocket.recv(64)
-            reply = buf.decode('utf-8')
-            if len(buf) > 0:
-                print(reply)
-                if reply == 'ok':
-                    waiting = False
-                    break
+        # while waiting:
+        #     buf = clientsocket.recv(64)
+        #     reply = buf.decode('utf-8')
+        #     if len(buf) > 0:
+        #         print(reply)
+        #         if reply == 'ok':
+        #             waiting = False
+        #             break
         
     else:
         last_time = time.time()
