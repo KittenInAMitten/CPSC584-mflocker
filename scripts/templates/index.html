@@ -67,10 +67,10 @@
                 <div id="log-messages"></div>
             </div>
 
-            <div class="last-img">
+            <!-- <div class="last-img">
                 <h3>Image</h3>
-                <img src="{{ url_for('static', filename='images1.jpg') }}" alt="Image" class="image">
-            </div>
+                <img id="last-image" src="{{ url_for('static', filename='images/blue.jpg') }}" alt="Image" class="image">
+            </div> -->
         </div>
     </div>
 
@@ -159,7 +159,7 @@
     document.addEventListener('keydown', (e) => {
         if (e.key === 'z') {
             // move images1.jpg fro images folder to static folder
-            sendCommand('blank')
+            sendCommand('take_picture')
         }
     });
 
@@ -191,7 +191,10 @@
 
         var followTimer = null;
 
-        function sendCommand(action) {
+        var currentCommand = 'blank'
+
+        function sendCommandNew() {
+            var action = currentCommand
             fetch('/command', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -200,6 +203,41 @@
             .then(res => res.json())
             .then(data => log(`Sent: ${data.action}`))
             .catch(err => log(`Error: ${err}`));
+            if(currentCommand != 'blank')
+                currentCommand = 'blank'
+
+        }
+
+        var commandTimer = setInterval(function(){
+                // the function can do whatever you need it to
+                // console.log("Mouse is down!");
+                sendCommandNew();
+            }, 250);
+
+        function setCommandTimer() {
+            clearInterval(commandTimer)
+            commandTimer = setInterval(function(){
+                // the function can do whatever you need it to
+                // console.log("Mouse is down!");
+                sendCommandNew();
+            }, 250);
+        }
+
+        function sendCommand(action) {
+            // fetch('/command', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ action })
+            // })
+            // .then(res => res.json())
+            // .then(data => log(`Sent: ${data.action}`))
+            // .catch(err => log(`Error: ${err}`));
+            if(commandTimer == null) {
+                setCommandTimer()
+            }
+            if(currentCommand == 'blank'){
+                currentCommand = action
+            }
         }
 
         function log(message) {
@@ -211,16 +249,11 @@
         function modeToggle() {
             const buttons = document.querySelectorAll('.controls button');
             if(document.getElementById('mode-toggle').checked) {
-                clearInterval(followTimer);
-                followTimer = setInterval(function(){
-                    sendCommand('blank')
-                }, 100)
                 sendCommand('setAutomatic');
                 buttons.forEach(button => {
                     button.disabled = true;
                 });
             } else {
-                clearInterval(followTimer);
                 sendCommand('setManual');
                 buttons.forEach(button => {
                     button.disabled = false;
