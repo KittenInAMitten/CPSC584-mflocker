@@ -49,9 +49,9 @@
         
             <div id="in-frame" class="tab-content active">
                 <ul class="student-list" id="students-in-frame">
-                    <li id="disappear">🔴 Name 1</li>
-                    <li>🟡 Name 2</li>
-                    <li>🔵 Name 3</li>
+                    <li id="student-1">🟢 Name 1</li>
+                    <li id="student-2">🟡 Name 2</li>
+                    <li id="student-3">🔵 Name 3</li>
                 </ul>
             </div>
         
@@ -77,7 +77,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 
-    let flashing = false;
     let flashInterval;
 
     function switchTab(tabName) {
@@ -113,28 +112,22 @@
             showLastVisibleFrame(studentName);
         };
         if (!flashing) {
-            // studentsInFrame.removeChild(disappearStudent);
-            // studentsNotInFrame.appendChild(studentListItem);
-            disappearStudent.textContent = `⚠️ 🔴 Name 1`;
+            disappearStudent.textContent = `⚠️ 🟢 Name 1`;
             disappearStudent.appendChild(showFrameButton);
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             const logEntry = document.createElement('p');
-            logEntry.textContent = `🔴 Name 1 disappeared from frame at ${timeString}`;
+            logEntry.textContent = `🟢 Name 1 disappeared from frame at ${timeString}`;
             logBox.appendChild(logEntry);
         } else {
-            // studentsNotInFrame.removeChild(disappearStudent);
-            // studentsInFrame.appendChild(disappearStudent);
-            disappearStudent.textContent = `🔴 Name 1`;
-            //disappearStudent.removeChild(showFrameButton);
+            disappearStudent.textContent = `🟢 Name 1`;
             const now = new Date();
             const timeString = now.toLocaleTimeString();
             const logEntry = document.createElement('p');
-            logEntry.textContent = `🔴 Name 1 re-entered frame at ${timeString}`;
+            logEntry.textContent = `🟢 Name 1 re-entered frame at ${timeString}`;
             logBox.appendChild(logEntry);
         }
         disappearStudent.classList.toggle('disappear');
-        // disappearStudent.textContent = disappearStudent.textContent === '🔴 Name 1' ? '🟡 Name 2' : '🔴 Name 1';
     }
     document.addEventListener('keydown', (e) => {
         if (e.key === '2') {
@@ -163,7 +156,7 @@
         }
     });
 
-    function toggleFlashingBackgrounds() {
+    function toggleFlashingBackgrounds(flashing) {
         const inFrameDiv = document.getElementById('in-frame');
         const notInFrameDiv = document.getElementById('not-in-frame');
     
@@ -183,11 +176,16 @@
     
     // const lastImageUrl = "{{ url_for('static', filename='images/blue.jpg') }}" + '?ts=' + Date.now();
     
-    function showLastVisibleFrame(studentName) {
-        //alert(`Showing last visible frame for ${studentName}`);
+    function showLastVisibleFrame(studentName, icon, index) {
+        const images = [
+            "{{ url_for('static', filename='images/green.jpg') }}",
+            "{{ url_for('static', filename='images/yellow.jpg') }}",
+            "{{ url_for('static', filename='images/blue.jpg') }}"
+        ];
+    
         Swal.fire({
-            title: `<h4>Showing last visible frame for ${studentName}</h4>`,
-            imageUrl: "{{ url_for('static', filename='images/blue.jpg') }}" + '?ts=' + Date.now(),
+            title: `<h4>${icon} Showing last visible frame for ${studentName}</h4>`,
+            imageUrl: images[index] + '?ts=' + Date.now(),
             imageWidth: 300,
             imageAlt: 'Last visible frame',
             confirmButtonText: 'Close'
@@ -196,13 +194,56 @@
 </script>
 
     <script>
+
+        let flashing = false;
         const logBox = document.getElementById('log-messages');
+
+        const studentNames = {
+            0: { name: 'Name 1', icon: '🟢' },
+            1: { name: 'Name 2', icon: '🟡' },
+            2: { name: 'Name 3', icon: '🔵' }
+        };
 
         var followTimer = null;
 
         var currentCommand = 'blank'
 
         function updateStudents(studentsList) {
+            const states = dataString.trim().split(" ");
+            const flashing = states.includes("0");
+            toggleFlashingBackgrounds(flashing);
+
+            states.forEach((value, index) => {
+                const studentId = `student-${index + 1}`;
+                const studentElement = document.getElementById(studentId);
+                const isVisible = value === "1";
+                const { name, icon } = studentNames[index];
+                const now = new Date();
+                const timeString = now.toLocaleTimeString();
+    
+                studentElement.innerHTML = '';
+        
+                const statusIcon = isVisible ? icon : `⚠️ ${icon}`;
+                studentElement.textContent = `${statusIcon} ${name}`;
+                studentElement.id = studentId;
+        
+                const logEntry = document.createElement('p');
+                logEntry.textContent = isVisible
+                    ? `${icon} ${name} re-entered frame at ${timeString}`
+                    : `${icon} ${name} disappeared from frame at ${timeString}`;
+                logBox.appendChild(logEntry);
+        
+                if (!isVisible) {
+                    const showFrameButton = document.createElement('button');
+                    showFrameButton.textContent = 'Show Last Visible Frame';
+                    showFrameButton.className = 'show-frame-btn';
+                    showFrameButton.onclick = function () {
+                        showLastVisibleFrame(name, icon, index);
+                    };
+                    studentElement.appendChild(document.createElement("br"));
+                    studentElement.appendChild(showFrameButton);
+                }
+            });
             
         }
 
