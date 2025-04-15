@@ -24,8 +24,10 @@ KEYBOARD_MODE = True
 
 app = Flask(__name__)
 
-# clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# clientsocket.connect(('localhost', 8089))
+# app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
+clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+clientsocket.connect(('localhost', 8089))
 
 @app.route('/')
 def index():
@@ -37,7 +39,10 @@ def command():
     global start_time
     global last_time
     global lastBlank
+    global current_detection
     data = request.json
+    
+    
     # show_info()
     # if data['action'] != "lock": 
     if waiting == False:
@@ -46,61 +51,35 @@ def command():
             print(f"Received command: {data['action']}")
         waiting = True
         lastBlank = False
-        # clientsocket.send(bytes(data['action'], 'UTF-8'))
+        clientsocket.send(bytes(data['action'], 'UTF-8'))
         
-        # if data['action'] == "forward":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        #     # move_forward()
-        # elif data['action'] == "backward":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        #     # move_backward()
-        # elif data['action'] == "left":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        #     # turn_left()
-        # elif data['action'] == "right":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        #     # turn_right()
-        # elif data['action'] == "tilt_up":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        #     # tilt_up()
-        # elif data['action'] == "tilt_down":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        # elif data['action'] == "setAutomatic":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        # elif data['action'] == "setManual":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        # elif data['action'] == "take_picture":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-        # elif data['action'] == "blank":
-        #     clientsocket.send(bytes(data['action'], 'UTF-8'))
-            # lastBlank = True
-            # tilt_down()
-        # elif data['action'] == "lock":
-        #     lock_pos()
-        # show_info()  
         sleep(0.5)
-        # while waiting:
-        #     buf = clientsocket.recv(64)
-        #     reply = buf.decode('utf-8')
-        #     if len(buf) > 0:
-        #         print(reply)
-        #         if reply == 'ok':
-        #             waiting = False
-        #             break
+        while waiting:
+            buf = clientsocket.recv(64)
+            reply = buf.decode('utf-8')
+            if len(buf) > 0:
+                print(reply)
+                parts = reply.split(" ")
+                if len(parts) == 4:
+                    for x in range(3):
+                        if parts[x + 1].isnumeric():
+                            current_detection[x] = int(parts[x + 1])
+                if parts[0] == 'ok':
+                    waiting = False
+                    break
         
     else:
         last_time = time.time()
         if last_time - start_time > 1.5:
             waiting = False
     
-    return jsonify({"status": "success", "action": data['action']})
+    return jsonify({"status": "success", "action": data['action'], "students": ' '.join(str(x) for x in current_detection)})
 
 @app.route('/video_feed')
 def video_feed():
     print("video started")
     # return Vilib.display()
     return "http://172.17.10.168:9000/mjpg"
-
 
 if __name__ == '__main__':
     # control_thread = threading.Thread(target=main_loop, daemon=True)

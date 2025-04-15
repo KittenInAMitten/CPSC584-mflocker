@@ -180,14 +180,14 @@
             notInFrameDiv.classList.remove('flashing');
         }
     }
-
-    const lastImageUrl = "{{ url_for('static', filename='images/blue.jpg') }}";
+    
+    // const lastImageUrl = "{{ url_for('static', filename='images/blue.jpg') }}" + '?ts=' + Date.now();
     
     function showLastVisibleFrame(studentName) {
         //alert(`Showing last visible frame for ${studentName}`);
         Swal.fire({
             title: `<h4>Showing last visible frame for ${studentName}</h4>`,
-            imageUrl: lastImageUrl,
+            imageUrl: "{{ url_for('static', filename='images/blue.jpg') }}" + '?ts=' + Date.now(),
             imageWidth: 300,
             imageAlt: 'Last visible frame',
             confirmButtonText: 'Close'
@@ -202,6 +202,10 @@
 
         var currentCommand = 'blank'
 
+        function updateStudents(studentsList) {
+            
+        }
+
         function sendCommandNew() {
             var action = currentCommand
             fetch('/command', {
@@ -210,7 +214,7 @@
                 body: JSON.stringify({ action })
             })
             .then(res => res.json())
-            .then(data => log(`Sent: ${data.action}`))
+            .then(data => {log(`Sent: ${data.action}`); updateStudents(data.students)})
             .catch(err => log(`Error: ${err}`));
             if(currentCommand != 'blank')
                 currentCommand = 'blank'

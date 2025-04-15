@@ -375,7 +375,7 @@ def main():
                     elif command == "blank":
                         print("update")
                         followRed()
-                connection.send(bytes('ok', 'UTF-8'))
+                connection.send(bytes('ok ' + ' '.join(str(x) for x in detected), 'UTF-8'))
                 print(*detected, end="\t")
                 sleep(0.05)
     except KeyboardInterrupt:
